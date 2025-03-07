@@ -1,0 +1,6 @@
+.vscode
+dependencies/include/gl*
+dependencies/library/lib*
+main.dSYM
+main
+
