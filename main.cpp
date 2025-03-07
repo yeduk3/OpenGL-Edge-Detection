@@ -77,6 +77,22 @@ void cursorPosCallback(GLFWwindow *window, double xpos, double ypos)
     lastY = ypos;
 }
 
+float edgeThreshold = 0.2f;
+
+void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods)
+{
+    if (key == GLFW_KEY_RIGHT && action > GLFW_RELEASE)
+    {
+        edgeThreshold = comparator::min(0.2, comparator::max(0, edgeThreshold + 0.01f));
+        std::cout << "edgeThreshold: " << edgeThreshold << std::endl;
+    }
+    if (key == GLFW_KEY_LEFT && action > GLFW_RELEASE)
+    {
+        edgeThreshold = comparator::min(0.2, comparator::max(0, edgeThreshold - 0.01f));
+        std::cout << "edgeThreshold: " << edgeThreshold << std::endl;
+    }
+}
+
 void init(GLFWwindow *window)
 {
     obj.loadObject("obj", "teapot.obj");
@@ -225,7 +241,7 @@ void render(GLFWwindow *window)
     glBindTexture(GL_TEXTURE_2D, texture);
 
     GLuint edgeThresholdLoc = glGetUniformLocation(program.programID, "edgeThreshold");
-    glUniform1f(edgeThresholdLoc, 0.01);
+    glUniform1f(edgeThresholdLoc, edgeThreshold);
     GLuint widthLoc = glGetUniformLocation(program.programID, "width");
     glUniform1i(widthLoc, w);
     GLuint heightLoc = glGetUniformLocation(program.programID, "height");
@@ -270,6 +286,7 @@ int main()
 
     glfwSetCursorPosCallback(window, cursorPosCallback);
     glfwSetScrollCallback(window, scrollCallback);
+    glfwSetKeyCallback(window, keyCallback);
 
     init(window);
 
